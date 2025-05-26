@@ -8,8 +8,11 @@ import "Locksmith.Utilities"
 -- Load in previous data
 LocksmithLocksData = Turbine.PluginData.Load(Turbine.DataScope.Server, "LocksmithLocksData")
 LocksmithCharacterSettings = Turbine.PluginData.Load(Turbine.DataScope.Character, "LocksmithCharacterSettings")
+
 import "Locksmith.Commands"
 import "Locksmith.LocksmithIconButton"
+
+LocksmithIconButton = LocksmithIconButton()
 
 datetime = Turbine.Engine:GetDate()
 year = datetime.Year
@@ -209,8 +212,8 @@ function checkForResets()
     Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
 end
 
--- Disabled do to a misbehaving
---[[
+-- Disabled due to a misbehaviour
+
 function initializeOptionsMenu()
     local options = Turbine.UI.Control();
     options:SetBackColor(Turbine.UI.Color(0.1, 0.1, 0.1));
@@ -223,19 +226,17 @@ function initializeOptionsMenu()
     checkbox:SetSize(350, 30);
     checkbox:SetPosition(10, 10);
     checkbox:SetText("Show Locksmith button for ease of access");
-    checkbox:SetChecked(LocksmithSettings["settings"]["showButton"]);
+    checkbox:SetChecked(LocksmithCharacterSettings["settings"]["showButton"]);
     -- Handle checkbox state change --
     checkbox.CheckedChanged = function(sender, args)
-        LocksmithIconButton:ShowButton(sender:IsChecked())
-        LocksmithSettings["settings"]["showButton"] = sender:IsChecked()
-        Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithSettings", LocksmithSettings)
+        LocksmithIconButton:SetVisible(sender:IsChecked())
+        LocksmithCharacterSettings["settings"]["showButton"] = sender:IsChecked()
+        Turbine.PluginData.Save(Turbine.DataScope.Character, "LocksmithCharacterSettings", LocksmithCharacterSettings)
     end
 end
 
 initializeOptionsMenu()
-]]
 
-LocksmithIconButton()
 checkForResets()
 Turbine.Shell.WriteLine("Locksmith v" .. VersionNo .. " by Veldermann™")
 

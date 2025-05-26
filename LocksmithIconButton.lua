@@ -5,6 +5,7 @@ function LocksmithIconButton:Constructor()
 
     local x = LocksmithCharacterSettings["settings"]["button"]["position_x"]
     local y = LocksmithCharacterSettings["settings"]["button"]["position_y"]
+    local showButton = LocksmithCharacterSettings["settings"]["showButton"]
 
     self.inactiveTransparency = 0.6
     self.activeTransparency = 1.0
@@ -13,10 +14,17 @@ function LocksmithIconButton:Constructor()
     self:SetPosition(x, y)
     self:SetSize(42,42)
     self:SetOpacity(self.inactiveTransparency)
-    self:SetVisible(true)
+    self:SetVisible(showButton)
     self:SetWantsKeyEvents(true)
     
     self.KeyDown = function(sender, args)
+        if args.Action == 0x100000B3 and showButton then
+            if self:IsVisible() then
+                self:SetVisible(false)
+            else
+                self:SetVisible(true)
+            end
+        end
         if args["Action"] == 145 and SessionVariables["settings"]["showWindow"] then
             LocksmithInfoWindow:HideWindow()
         end
@@ -84,5 +92,3 @@ function LocksmithIconButton:MouseLeave()
     self.mouseInside = false;
     self:SetOpacity(self.inactiveTransparency);
 end
-
-
