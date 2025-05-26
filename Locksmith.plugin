@@ -1,0 +1,85 @@
+<?xml version = "1.0"?>
+<Plugin> 
+    <Information>
+    <Name>Locksmith</Name>
+        <Author>Veldermann™</Author>
+        <Version>3.1.4</Version>
+<Description>
+- - Changelog - -
+
+v2.0.0:
+- Added visual Ui
+
+v2.0.1:
+- Made window movable by title
+
+v2.1.0:
+- Added window position saving
+
+v2.1.1:
+- Added Fane
+- Corrected scroll bar location
+
+v2.2.0:
+- Added weekly reset timer
+
+v2.2.1:
+- Added Isle
+- Added Street
+- Added Arena
+
+v2.2.2:
+- UI elements positioning
+
+v2.3.0:
+- Added english localization
+- /locks
+
+v2.3.1:
+- Bug fix related to daily reset
+
+v2.3.2:
+- Added solo locks, except dragon
+
+v2.3.3:
+- Pressing ESC now closes the window
+- Removed scrollbar if no characters
+
+v2.4.0:
+- Added Dun Shûma
+
+v3.0.0:
+- International localization
+- Code cleanup
+
+v3.1.0:
+- Button for ease of access
+
+v3.1.1:
+- Character specific UI positions
+
+v3.1.3:
+- Code cleanup
+
+v3.1.4:
+- Attempt to be compendium compatible
+
+- - Changelog - -
+
+Locksmith - Keeps locks in check
+¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+/locks
+# 12 man #
+    UB, MK
+# 6 man #
+    Tomb, Wells, Dragon, Arena, DS
+# 3 man #
+    Fane, Streets, Island
+    
+/raid locks - data import
+
+</Description>
+    </Information>
+    <Package>Locksmith.Main</Package>
+    <Configuration Apartment = "Locksmith" />
+</Plugin>
