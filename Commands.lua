@@ -1,12 +1,10 @@
-import "Locksmith.LocksmithInfoWindow"
 
 locks = Turbine.ShellCommand()
 function locks:Execute(_, str)
-    if SessionVariables["settings"]["showWindow"] then
+    if LocksmithInfoWindow:IsVisible() then
         return
     end
-    SessionVariables["settings"]["showWindow"] = true
-    LocksmithInfoWindow()
+    LocksmithInfoWindow:ShowWindow()
 end
 Turbine.Shell.AddCommand("locks", locks)
 

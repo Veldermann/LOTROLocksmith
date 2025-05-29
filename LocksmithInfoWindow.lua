@@ -27,8 +27,7 @@ function LocksmithInfoWindow:Constructor()
     Turbine.UI.Window.Constructor(self)
     self:SetSize(width,height)
     self:SetPosition(x,y)
-    self:SetVisible(true)
-    self:SetWantsKeyEvents(true)
+    self:SetVisible(false)
     self:SetMouseVisible(true)
     self:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
     
@@ -101,36 +100,59 @@ function LocksmithInfoWindow:Constructor()
     ClosingBUttonImage:SetSize(20, 20)
     ClosingBUttonImage:SetBackColorBlendMode(Turbine.UI.BlendMode.AlphaBlend)
     ClosingBUttonImage:SetBlendMode(Turbine.UI.BlendMode.Overlay)
-    ClosingBUttonImage:SetWantsKeyEvents(false)
     ClosingBUttonImage:SetMouseVisible(false)
+    ClosingBUttonImage:SetWantsKeyEvents(true)
     ClosingBUttonImage:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
     ClosingBUttonImage:SetText("X")
 
     ClosingBUtton.MouseClick = function()
-        self:SetVisible(false)
-        SessionVariables["settings"]["showWindow"] = false
+        self:HideWindow()
     end
     
-    -- Create the tree view control.
-    treeView = Turbine.UI.TreeView();
-    treeView:SetParent(self);
-    treeView:SetPosition(8, 37);
-    treeView:SetSize(234, 375);
-    treeView:SetBackColor(Turbine.UI.Color(0.250, 0.250, 0.250));
-    treeView:SetIndentationWidth(15);
-     
-    -- Give the tree view a scroll bar.
-    scriptTextScrollBar = Turbine.UI.Lotro.ScrollBar();
-    scriptTextScrollBar:SetOrientation( Turbine.UI.Orientation.Vertical );
-    scriptTextScrollBar:SetParent(self);
-    scriptTextScrollBar:SetPosition(240, 70);
-    scriptTextScrollBar:SetSize(10, 340);
-    scriptTextScrollBar:SetVisible(false)
-     
-    treeView:SetVerticalScrollBar(scriptTextScrollBar);
+    ClosingBUttonImage.KeyDown = function(sender, args)
+        if args["Action"] == 145 and self:IsVisible() then
+            self:HideWindow()
+        end
+    end
 
-    self.rootNodes = treeView:GetNodes()
+     -- Create the tree view control.
+     self.treeView = Turbine.UI.TreeView();
+     self.treeView:SetParent(self);
+     self.treeView:SetPosition(8, 37);
+     self.treeView:SetSize(234, 375);
+     self.treeView:SetBackColor(Turbine.UI.Color(0.250, 0.250, 0.250));
+     self.treeView:SetIndentationWidth(15);
+      
+     -- Give the tree view a scroll bar.
+     scriptTextScrollBar = Turbine.UI.Lotro.ScrollBar();
+     scriptTextScrollBar:SetOrientation(Turbine.UI.Orientation.Vertical);
+     scriptTextScrollBar:SetParent(self);
+     scriptTextScrollBar:SetPosition(240, 70);
+     scriptTextScrollBar:SetSize(10, 340);
+     scriptTextScrollBar:SetVisible(false)
+      
+     self.treeView:SetVerticalScrollBar(scriptTextScrollBar);
     
+    self.rootNodes = self.treeView:GetNodes()
+end
+
+function LocksmithInfoWindow:KeyDown(sender, args)
+    Turbine.Shell.WriteLine("asd")
+end
+
+function LocksmithInfoWindow:ShowWindow()
+    LocksmithInfoWindow.rootNodes:Add(LocksmithInfoWindow.treeView:GetNodes())
+    LocksmithInfoWindow:LoadLocksData()
+    LocksmithInfoWindow:SetVisible(true)
+end
+
+function LocksmithInfoWindow:HideWindow()
+    LocksmithInfoWindow.rootNodes:Clear()
+    LocksmithInfoWindow:SetVisible(false)
+end
+
+
+function LocksmithInfoWindow:LoadLocksData()
     locksInfo = LocksmithLocksData["locks"]
     -- characters --
     for character, instances in pairs(locksInfo) do
@@ -299,9 +321,4 @@ function LocksmithInfoWindow:Constructor()
             end
         end
     end
-end
-
-function LocksmithInfoWindow:HideWindow()
-    self:SetVisible(false)
-    SessionVariables["settings"]["showWindow"] = false
 end

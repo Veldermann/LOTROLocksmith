@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>3.1.5</Version>
+        <Version>3.1.7</Version>
 <Description>
 - - Changelog - -
 
@@ -66,7 +66,14 @@ v3.1.4:
 
 v3.1.5:
 - Option to show or hide button
-- F12 now hides the button
+- Hidding UI should now hide the button
+
+v3.1.6:
+- Optimization
+- Bug Fix related to Dragon lock
+
+v3.1.7:
+- Bug fix related to closing
 
 - - Changelog - -
 

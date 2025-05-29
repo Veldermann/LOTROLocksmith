@@ -1,3 +1,4 @@
+
 -- Import Turbine/Lotro base libraries --
 import "Turbine"
 import "Turbine.UI.Lotro"
@@ -9,9 +10,31 @@ import "Locksmith.Utilities"
 LocksmithLocksData = Turbine.PluginData.Load(Turbine.DataScope.Server, "LocksmithLocksData")
 LocksmithCharacterSettings = Turbine.PluginData.Load(Turbine.DataScope.Character, "LocksmithCharacterSettings")
 
-import "Locksmith.Commands"
-import "Locksmith.LocksmithIconButton"
+-- Character Specific Settings
+if LocksmithCharacterSettings == nil then
+    LocksmithCharacterSettings = {}
+    LocksmithCharacterSettings["settings"] = {
+        ["window"] = {
+            ["position_x"] = 100,
+            ["position_y"] = 100
+        },
+        ["button"] = {
+            ["position_x"] = 100,
+            ["position_y"] = 100
+        },
+        ["showButton"] = true
+    }
+end
 
+Turbine.PluginData.Save(Turbine.DataScope.Character, "LocksmithCharacterSettings", LocksmithCharacterSettings)
+
+
+import "Locksmith.LocksmithInfoWindow"
+LocksmithInfoWindow = LocksmithInfoWindow()
+
+import "Locksmith.Commands"
+
+import "Locksmith.LocksmithIconButton"
 LocksmithIconButton = LocksmithIconButton()
 
 datetime = Turbine.Engine:GetDate()
@@ -59,23 +82,6 @@ if not LocksmithLocksData["characterData"][PlayerName] then
 end
 
 Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
-
--- Character Specific Settings
-if LocksmithCharacterSettings == nil then
-    LocksmithCharacterSettings = {}
-    LocksmithCharacterSettings["settings"] = {
-        ["window"] = {
-            ["position_x"] = 100,
-            ["position_y"] = 100
-        },
-        ["button"] = {
-            ["position_x"] = 100,
-            ["position_y"] = 100
-        }
-    }
-end
-
-Turbine.PluginData.Save(Turbine.DataScope.Character, "LocksmithCharacterSettings", LocksmithCharacterSettings)
 
 -- Determine if chest opened or dungeon completed
 Turbine.Chat.Received = function(sender, args)
@@ -198,7 +204,7 @@ function checkForResets()
                 end
     
                 for character, instanceLocks in pairs (LocksmithLocksData["locks"]) do
-                    if instance["name"] == "Dragon" and LocksmithLocksData["locks"][character]["Dragon"] and LocksmithSettings["locks"][character]["Dragon"]["SOLO"] then
+                    if instance["name"] == "Dragon" and LocksmithLocksData["locks"][character]["Dragon"] and LocksmithLocksData["locks"][character]["Dragon"]["SOLO"] then
                         if tableLenght(LocksmithLocksData["locks"][character]["Dragon"]) > 1 then
                             LocksmithLocksData["locks"][character]["Dragon"]["SOLO"] = nil
                         else
@@ -212,8 +218,7 @@ function checkForResets()
     Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
 end
 
--- Disabled due to a misbehaviour
-
+-- Options menu on /plugins manager
 function initializeOptionsMenu()
     local options = Turbine.UI.Control();
     options:SetBackColor(Turbine.UI.Color(0.1, 0.1, 0.1));

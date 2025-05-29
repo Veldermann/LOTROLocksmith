@@ -1,4 +1,3 @@
-import "Locksmith.LocksmithInfoWindow"
 
 LocksmithIconButton = class(Turbine.UI.Lotro.Window)
 function LocksmithIconButton:Constructor()
@@ -25,9 +24,6 @@ function LocksmithIconButton:Constructor()
                 self:SetVisible(true)
             end
         end
-        if args["Action"] == 145 and SessionVariables["settings"]["showWindow"] then
-            LocksmithInfoWindow:HideWindow()
-        end
     end
 
     self.background = Turbine.UI.Control()
@@ -50,11 +46,10 @@ function LocksmithIconButton:Constructor()
         self.Moving = false
         position_x, position_y = self:GetPosition()
         if LocksmithCharacterSettings["settings"]["button"]["position_x"] == position_x and LocksmithCharacterSettings["settings"]["button"]["position_y"] == position_y then
-            if SessionVariables["settings"]["showWindow"] == false then
-                LocksmithInfoWindow()
-                SessionVariables["settings"]["showWindow"] = true
-            else
+            if LocksmithInfoWindow:IsVisible() then
                 LocksmithInfoWindow:HideWindow()
+            else
+                LocksmithInfoWindow:ShowWindow()
             end
         else
             LocksmithCharacterSettings["settings"]["button"]["position_x"] = position_x
