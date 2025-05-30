@@ -28,15 +28,6 @@ end
 
 Turbine.PluginData.Save(Turbine.DataScope.Character, "LocksmithCharacterSettings", LocksmithCharacterSettings)
 
-
-import "Locksmith.LocksmithInfoWindow"
-LocksmithInfoWindow = LocksmithInfoWindow()
-
-import "Locksmith.Commands"
-
-import "Locksmith.LocksmithIconButton"
-LocksmithIconButton = LocksmithIconButton()
-
 datetime = Turbine.Engine:GetDate()
 year = datetime.Year
 hour = datetime.Hour
@@ -65,7 +56,11 @@ if LocksmithLocksData == nil then
     LocksmithLocksData = {}
     LocksmithLocksData["locks"] = {}
     LocksmithLocksData["characterData"] = {}
-    LocksmithLocksData["reset"] = {["year"] = year, ["weekly"] = resetWeekly, ["daily"] = resetDaily}
+    LocksmithLocksData["reset"] = {
+        ["year"] = year,
+        ["weekly"] = resetWeekly,
+        ["daily"] = resetDaily
+    }
     Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
 end
 
@@ -82,6 +77,14 @@ if not LocksmithLocksData["characterData"][PlayerName] then
 end
 
 Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
+
+import "Locksmith.LocksmithInfoWindow"
+LocksmithInfoWindow = LocksmithInfoWindow()
+
+import "Locksmith.Commands"
+
+import "Locksmith.LocksmithIconButton"
+LocksmithIconButton = LocksmithIconButton()
 
 -- Determine if chest opened or dungeon completed
 Turbine.Chat.Received = function(sender, args)
