@@ -286,8 +286,16 @@ function LocksmithInfoWindow:LoadLocksData()
         
                     local subNodes = tierNode:GetChildNodes();
 
+                    -- Sort bosses table for correct ordering --
+                    local bossesKeys = {}
+                    for bossKey in pairs(bosses) do
+                        table.insert(bossesKeys, bossKey)
+                    end
+                    table.sort(bossesKeys)
+
                     -- Bosses --
-                    for boss, attempts in pairs(bosses) do
+                    for _, boss in pairs(bossesKeys) do
+                        local attempts = bosses[boss]
                         local bossAttemptsNode = Turbine.UI.TreeNode();
                         bossAttemptsNode:SetSize(144, 26)
 
