@@ -15,6 +15,7 @@ function LocksmithIconButton:Constructor()
     self:SetOpacity(self.inactiveTransparency)
     self:SetVisible(showButton)
     self:SetWantsKeyEvents(true)
+    self:SetZOrder(1)
     
     self.KeyDown = function(sender, args)
         if args.Action == 0x100000B3 and showButton then

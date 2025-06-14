@@ -1,23 +1,6 @@
 
 LocksmithInfoWindow = class(Turbine.UI.Lotro.Window())
 function LocksmithInfoWindow:Constructor()
-    -- Calculate weekly reset --
-    local datetime = Turbine.Engine:GetDate()
-    local hour = datetime.Hour
-    local minute = datetime.Minute
-    local dayOfWeek = datetime.DayOfWeek
-    local dayOfYear = datetime.DayOfYear
-
-    local minutesToReset = 60 - minute
-
-    if hour >= 10 then
-        hoursToReset = 24 - hour + 10 - 1
-        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear - 1
-    else
-        hoursToReset = 10 - hour - 1
-        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear
-    end
-
     local width = 250
     local height = 450
     local x = LocksmithCharacterSettings["settings"]["window"]["position_x"]
@@ -54,7 +37,6 @@ function LocksmithInfoWindow:Constructor()
     self.resetLable:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
     self.resetLable:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
     self.resetLable:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
-    self.resetLable:SetText("Weekly reset in " .. daysToReset .. "d ".. hoursToReset .. "h " .. minutesToReset .. "m")
 
     -- Window moving --
     self.Moving = false
@@ -142,6 +124,7 @@ end
 
 function LocksmithInfoWindow:ShowWindow()
     LocksmithInfoWindow.rootNodes:Add(LocksmithInfoWindow.treeView:GetNodes())
+    LocksmithInfoWindow:UpdateResetTimer()
     LocksmithInfoWindow:LoadLocksData()
     LocksmithInfoWindow:SetVisible(true)
 end
@@ -151,6 +134,25 @@ function LocksmithInfoWindow:HideWindow()
     LocksmithInfoWindow:SetVisible(false)
 end
 
+function LocksmithInfoWindow:UpdateResetTimer()
+    -- Calculate weekly reset --
+    local datetime = Turbine.Engine:GetDate()
+    local hour = datetime.Hour
+    local minute = datetime.Minute
+    local dayOfWeek = datetime.DayOfWeek
+    local dayOfYear = datetime.DayOfYear
+
+    local minutesToReset = 60 - minute
+
+    if hour >= 10 then
+        hoursToReset = 24 - hour + 10 - 1
+        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear - 1
+    else
+        hoursToReset = 10 - hour - 1
+        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear
+    end
+    self.resetLable:SetText("Weekly reset in " .. daysToReset .. "d ".. hoursToReset .. "h " .. minutesToReset .. "m")
+end
 
 function LocksmithInfoWindow:LoadLocksData()
     locksInfo = LocksmithLocksData["locks"]
