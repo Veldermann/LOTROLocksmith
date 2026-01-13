@@ -135,22 +135,18 @@ function LocksmithInfoWindow:HideWindow()
 end
 
 function LocksmithInfoWindow:UpdateResetTimer()
-    -- Calculate weekly reset --
-    local datetime = Turbine.Engine:GetDate()
-    local hour = datetime.Hour
-    local minute = datetime.Minute
-    local dayOfWeek = datetime.DayOfWeek
-    local dayOfYear = datetime.DayOfYear
+    local currentNormalizedEpoch = Turbine.Engine.GetLocalTime() - 28800
 
-    local minutesToReset = 60 - minute
+    local currentDays = math.floor(currentNormalizedEpoch / 86400)
+    local currentWeek = math.floor(currentDays / 7)
+    
+    local nextWeeklyEpoch = (currentWeek + 1) * 7 * 86400
+    local secondsToWeekly = nextWeeklyEpoch - currentNormalizedEpoch
 
-    if hour >= 10 then
-        hoursToReset = 24 - hour + 10 - 1
-        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear - 1
-    else
-        hoursToReset = 10 - hour - 1
-        daysToReset = LocksmithLocksData["reset"]["weekly"] - dayOfYear
-    end
+    local daysToReset = math.floor(secondsToWeekly / 86400)
+    local hoursToReset = math.floor((secondsToWeekly % 86400) / 3600)
+    local minutesToReset = math.floor((secondsToWeekly % 3600) / 60)
+
     self.resetLable:SetText("Weekly reset in " .. daysToReset .. "d ".. hoursToReset .. "h " .. minutesToReset .. "m")
 end
 
@@ -250,82 +246,88 @@ function LocksmithInfoWindow:LoadLocksData()
         
                 -- Tiers --
                 for tier, bosses in pairs(tiers) do
-                    local tierNode = Turbine.UI.TreeNode();
-                    tierNode:SetSize(144, 26)
+                    if tier ~= "completionEpoch" and tier ~= "reset" then
+                        local tierNode = Turbine.UI.TreeNode();
+                        tierNode:SetSize(144, 26)
 
-                    -- Border --
-                    tierNode.border = Turbine.UI.Control()
-                    tierNode.border:SetParent(tierNode)
-                    tierNode.border:SetSize(144, 26)
-                    tierNode.border:SetPosition(3, 3)
-                    tierNode.border:SetMouseVisible(false)
-                    tierNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+                        -- Border --
+                        tierNode.border = Turbine.UI.Control()
+                        tierNode.border:SetParent(tierNode)
+                        tierNode.border:SetSize(144, 26)
+                        tierNode.border:SetPosition(3, 3)
+                        tierNode.border:SetMouseVisible(false)
+                        tierNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
 
-                    tierNode.background = Turbine.UI.Control()
-                    tierNode.background:SetParent(tierNode)
-                    tierNode.background:SetSize(135, 17)
-                    tierNode.background:SetPosition(6, 6)
-                    tierNode.background:SetMouseVisible(false)
-                    tierNode.background:SetBackColor(Turbine.UI.Color(0.275, 0.275, 0.275))
-
-                    tierNode.label = Turbine.UI.Label()
-                    tierNode.label:SetParent(tierNode)
-                    tierNode.label:SetSize(135, 17)
-                    tierNode.label:SetPosition(5, 5)
-                    tierNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
-                    tierNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
-                    tierNode.label:SetText(tier)
-
-                    -- Mouse functions --
-                    tierNode.label.MouseEnter = function()
-                        tierNode.background:SetBackColor(Turbine.UI.Color(0, 0, 0))
-                    end
-                    tierNode.label.MouseLeave = function()
+                        tierNode.background = Turbine.UI.Control()
+                        tierNode.background:SetParent(tierNode)
+                        tierNode.background:SetSize(135, 17)
+                        tierNode.background:SetPosition(6, 6)
+                        tierNode.background:SetMouseVisible(false)
                         tierNode.background:SetBackColor(Turbine.UI.Color(0.275, 0.275, 0.275))
-                    end
 
-                    subNodes:Add(tierNode);
-        
-                    local subNodes = tierNode:GetChildNodes();
+                        tierNode.label = Turbine.UI.Label()
+                        tierNode.label:SetParent(tierNode)
+                        tierNode.label:SetSize(135, 17)
+                        tierNode.label:SetPosition(5, 5)
+                        tierNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
+                        tierNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+                        tierNode.label:SetText(tier)
 
-                    -- Sort bosses table for correct ordering --
-                    local bossesKeys = {}
-                    for bossKey in pairs(bosses) do
-                        table.insert(bossesKeys, bossKey)
-                    end
-                    table.sort(bossesKeys)
+                        -- Mouse functions --
+                        tierNode.label.MouseEnter = function()
+                            tierNode.background:SetBackColor(Turbine.UI.Color(0, 0, 0))
+                        end
+                        tierNode.label.MouseLeave = function()
+                            tierNode.background:SetBackColor(Turbine.UI.Color(0.275, 0.275, 0.275))
+                        end
 
-                    -- Bosses --
-                    for _, boss in pairs(bossesKeys) do
-                        local attempts = bosses[boss]
-                        local bossAttemptsNode = Turbine.UI.TreeNode();
-                        bossAttemptsNode:SetSize(144, 26)
-
-                        bossAttemptsNode.border = Turbine.UI.Control()
-                        bossAttemptsNode.border:SetParent(bossAttemptsNode)
-                        bossAttemptsNode.border:SetSize(144, 26)
-                        bossAttemptsNode.border:SetPosition(3, 3)
-                        bossAttemptsNode.border:SetMouseVisible(false)
-                        bossAttemptsNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
-
-                        bossAttemptsNode.background = Turbine.UI.Control()
-                        bossAttemptsNode.background:SetParent(bossAttemptsNode)
-                        bossAttemptsNode.background:SetSize(135, 17)
-                        bossAttemptsNode.background:SetPosition(6, 6)
-                        bossAttemptsNode.background:SetMouseVisible(false)
-                        bossAttemptsNode.background:SetBackColor(Turbine.UI.Color(0.325, 0.325, 0.325))
-
-                        bossAttemptsNode.label = Turbine.UI.Label()
-                        bossAttemptsNode.label:SetParent(bossAttemptsNode)
-                        bossAttemptsNode.label:SetSize(135, 17)
-                        bossAttemptsNode.label:SetPosition(5, 5)
-                        bossAttemptsNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
-                        bossAttemptsNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
-                        bossAttemptsNode.label:SetText(boss .. " - " .. attempts)
-
-                        subNodes:Add(bossAttemptsNode);
+                        subNodes:Add(tierNode);
             
-                        local subNodes = bossAttemptsNode:GetChildNodes();
+                        local subNodes = tierNode:GetChildNodes();
+
+                        -- Sort bosses table for correct ordering --
+                        local bossesKeys = {}
+                        for bossKey in pairs(bosses) do
+                            table.insert(bossesKeys, bossKey)
+                        end
+                        table.sort(bossesKeys)
+
+                        -- Bosses --
+                        for _, boss in pairs(bossesKeys) do
+                            local attempts = bosses[boss]
+                            local bossAttemptsNode = Turbine.UI.TreeNode();
+                            bossAttemptsNode:SetSize(144, 26)
+
+                            bossAttemptsNode.border = Turbine.UI.Control()
+                            bossAttemptsNode.border:SetParent(bossAttemptsNode)
+                            bossAttemptsNode.border:SetSize(144, 26)
+                            bossAttemptsNode.border:SetPosition(3, 3)
+                            bossAttemptsNode.border:SetMouseVisible(false)
+                            bossAttemptsNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+
+                            bossAttemptsNode.background = Turbine.UI.Control()
+                            bossAttemptsNode.background:SetParent(bossAttemptsNode)
+                            bossAttemptsNode.background:SetSize(135, 17)
+                            bossAttemptsNode.background:SetPosition(6, 6)
+                            bossAttemptsNode.background:SetMouseVisible(false)
+                            bossAttemptsNode.background:SetBackColor(Turbine.UI.Color(0.325, 0.325, 0.325))
+
+                            bossAttemptsNode.label = Turbine.UI.Label()
+                            bossAttemptsNode.label:SetParent(bossAttemptsNode)
+                            bossAttemptsNode.label:SetSize(135, 17)
+                            bossAttemptsNode.label:SetPosition(5, 5)
+                            bossAttemptsNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
+                            bossAttemptsNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+                            if boss == "" then
+                                bossAttemptsNode.label:SetText(attempts)
+                            else
+                                bossAttemptsNode.label:SetText(boss .. " - " .. attempts)
+                            end
+
+                            subNodes:Add(bossAttemptsNode);
+                
+                            local subNodes = bossAttemptsNode:GetChildNodes();
+                        end
                     end
                 end
             end

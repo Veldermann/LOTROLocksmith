@@ -56,12 +56,11 @@ if LocksmithLocksData == nil then
     LocksmithLocksData = {}
     LocksmithLocksData["locks"] = {}
     LocksmithLocksData["characterData"] = {}
-    LocksmithLocksData["reset"] = {
-        ["year"] = year,
-        ["weekly"] = resetWeekly,
-        ["daily"] = resetDaily
-    }
     Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
+end
+
+if not LocksmithLocksData["locks"] then
+    LocksmithLocksData["locks"] = {}
 end
 
 if not LocksmithLocksData["locks"][PlayerName] then
@@ -118,46 +117,60 @@ Turbine.Chat.Received = function(sender, args)
                 end
             end
         end
-    end
 
-    -- Dragon and the storms, special development
-    -- args.ChatType == 21
-    if args.ChatType == 21 and message:find("Completed:") and message:find("The Dragon and the Storm") then
-        -- message:find(" -- Solo")
-        if message:find(" -- Tier ") then
-            for boss, instance in pairs(chestsDictionary) do
-                strStart, strEnd = string.find(message:gsub("-", " "), boss)
-                if strStart ~= nil then
-                    completionsRemaining = 3
-                    _, tierEnd = message:find(" -- Tier ")
-                    instanceTier = "Tier " .. message:sub(tierEnd + 1, tierEnd + 1)
+    -- Special Instances
+    -- args.ChatType == 21, message:find(" -- Solo")
+    -- Completed: Featured Instance: Great Barrow - Thadúr (cap level)
+    elseif args.ChatType == 21 and message:find("Completed:")then
+        -- Featured Instance
+        if message:find("Featured Instance:") and message:find("cap level") then
+            if not LocksmithLocksData["Featured Instance"] then
+                _, featureStart = message:find("Instance: ")
+                _, featureEnd = message:find("(cap level)")
 
-                    if message:find("Solo") then
-                        instanceTier = "Solo"
-                    else
+                instance = chestsDictionary["Featured Instance"]
+                instanceTier = message:sub(featureStart + 1, featureEnd - 11)
+                completionsRemaining = "LOCKED"
+                add_and_save(instance, instanceTier, completionsRemaining)
+            end
+        -- Dragon and the storms
+        elseif message:find("The Dragon and the Storm") then
+            if message:find(" -- Tier ") then
+                for boss, instance in pairs(chestsDictionary) do
+                    strStart, strEnd = string.find(message:gsub("-", " "), boss)
+                    if strStart ~= nil then
+                        completionsRemaining = 3
                         _, tierEnd = message:find(" -- Tier ")
                         instanceTier = "Tier " .. message:sub(tierEnd + 1, tierEnd + 1)
-                    end
-                    if LocksmithLocksData["locks"][PlayerName][instance["name"]] then
-                        if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier] then
-                            if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] ~= "LOCKED" then
-                                if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] <= 3 then
-                                    completionsRemaining = LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] - 1
+
+                        if message:find("Solo") then
+                            instanceTier = "Solo"
+                        else
+                            _, tierEnd = message:find(" -- Tier ")
+                            instanceTier = "Tier " .. message:sub(tierEnd + 1, tierEnd + 1)
+                        end
+                        if LocksmithLocksData["locks"][PlayerName][instance["name"]] then
+                            if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier] then
+                                if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] ~= "LOCKED" then
+                                    if LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] <= 3 then
+                                        completionsRemaining = LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier]["B1"] - 1
+                                    end
+                                else
+                                    completionsRemaining = "LOCKED"
                                 end
-                            else
-                                completionsRemaining = "LOCKED"
                             end
                         end
+                        add_and_save(instance, instanceTier, completionsRemaining)
+                        break
                     end
-                    add_and_save(instance, instanceTier, completionsRemaining)
-                    break
                 end
             end
-        end
+        end 
     end
 end
 
 function add_and_save(instance, instanceTier, completionsRemaining)
+    -- add Character
     if not LocksmithLocksData["locks"][PlayerName] then
         LocksmithLocksData["locks"][PlayerName] = {}
     end
@@ -174,46 +187,24 @@ function add_and_save(instance, instanceTier, completionsRemaining)
 
     -- Update or Add Boss
     LocksmithLocksData["locks"][PlayerName][instance["name"]][instanceTier][instance["boss"]] = completionsRemaining
+    local completionEpoch = Turbine.Engine.GetLocalTime()
+    LocksmithLocksData["locks"][PlayerName][instance["name"]]["completionEpoch"] = completionEpoch
+    LocksmithLocksData["locks"][PlayerName][instance["name"]]["reset"] = instance["reset"]
 
     Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
     return
 end
 
+-- Check for resets --
 function checkForResets()
-    if year > LocksmithLocksData["reset"]["year"] then
-        LocksmithLocksData["locks"] = {}
-        LocksmithLocksData["reset"]["year"] = year 
-        LocksmithLocksData["reset"]["weekly"] = LocksmithLocksData["reset"]["weekly"] + 7
-        LocksmithLocksData["reset"]["daily"] = dayOfYear + 1
-    else
-        if dayOfYear >= LocksmithLocksData["reset"]["weekly"] and hour >= 10 then
-            LocksmithLocksData["locks"] = {}
-            LocksmithLocksData["reset"]["year"] = year
-            LocksmithLocksData["reset"]["weekly"] = LocksmithLocksData["reset"]["weekly"] + 7
-            LocksmithLocksData["reset"]["daily"] = dayOfYear + 1
-        end
-    
-        if dayOfYear >= LocksmithLocksData["reset"]["daily"] and hour >= 10 then
-            for chest, instance in pairs(chestsDictionary) do
-                if instance["reset"] == "daily" and hour >= 10 then
-                    for character, instanceLocks in pairs (LocksmithLocksData["locks"]) do
-                        for instanceName, _ in pairs(instanceLocks) do
-                            if instance["name"] == instanceName then
-                                LocksmithLocksData["locks"][character][instanceName] = nil
-                            end
-                        end
-                        LocksmithLocksData["reset"]["daily"] = dayOfYear + 1
-                    end
-                end
-    
-                for character, instanceLocks in pairs (LocksmithLocksData["locks"]) do
-                    if instance["name"] == "Dragon" and LocksmithLocksData["locks"][character]["Dragon"] and LocksmithLocksData["locks"][character]["Dragon"]["SOLO"] then
-                        if tableLenght(LocksmithLocksData["locks"][character]["Dragon"]) > 1 then
-                            LocksmithLocksData["locks"][character]["Dragon"]["SOLO"] = nil
-                        else
-                            LocksmithLocksData["locks"][character]["Dragon"] = nil
-                        end 
-                    end
+    local currentEpoch = Turbine.Engine.GetLocalTime()
+    for character, instances in pairs(LocksmithLocksData["locks"]) do
+        for instanceName, instanceData in pairs(instances) do
+            if not instanceData["completionEpoch"] then
+                LocksmithLocksData["locks"][character][instanceName] = nil
+            else
+                if (instanceData["reset"] == "daily" and isDailyReset(instanceData["completionEpoch"], currentEpoch)) or (instanceData["reset"] == "weekly" and isWeeklyReset(instanceData["completionEpoch"], currentEpoch)) then
+                    LocksmithLocksData["locks"][character][instanceName] = nil
                 end
             end
         end
@@ -247,32 +238,3 @@ initializeOptionsMenu()
 
 checkForResets()
 Turbine.Shell.WriteLine("Locksmith v" .. VersionNo .. " by Veldermann™")
-
--- Chests
--- MK B1 - Well-worn Corsair's Chest - Tier 2: You have 3 completions remaining.
--- MK B2 - Belondor's Chest - Tier 2: You have 3 completions remaining.
--- MK B3 - Forgotten Smuggler's Chest - Tier 2: You have 3 completions remaining.
-
-
--- Tomb B1 - Sakhârshag's Chest - Tier 2: You have 9 completions remaining.
--- Tomb B2 - Imanak-tûr's Chest - Tier 2: You have 9 completions remaining.
--- Tomb B3 - Aratûg's Chest - Tier 2: You have 9 completions remaining.
-
--- Dragon - Ragrekhûl's Spoils
-
-
-
---[[ ERROR
-
-The lock for Khâshap's Chest - Solo has expired.
-The lock for Utho's Chest - Solo has expired.
-The lock for Aratûg's Chest - Solo has expired.
-The lock for Imanak-tûr's Chest - Solo has expired
-The lock for Sakhârshag's Chest - Solo has expired.
-The lock for Raghârik's Chest - Solo has expired.
-The lock for Urâbaz's Chest - Solo has expired.
-The lock for Arena Veteran's Chest - Solo has expired.
-The lock for Arena Neophyte's Chest - Solo has expired.
-The lock for Arena Champion's Chest - Solo has expired.
-
-]]

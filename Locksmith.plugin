@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>3.2.1</Version>
+        <Version>3.3.0</Version>
 <Description>
 - - Changelog - -
 
@@ -48,6 +48,13 @@ v3.2.0:
 
 v3.2.1:
 - Bug fix related to typo
+
+v3.3.0:
+- Major reset timers rework
+- Correct reset timer regardless of timezone
+- Experimental: Featured Instance
+- Epoch time for aqurate reset timers
+- More efficient reset calucaltions
 
 - - Changelog - -
 

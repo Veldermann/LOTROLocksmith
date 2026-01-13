@@ -86,8 +86,11 @@ chestsDictionary = {
         ["Urâbaz's Chest"] = {
             ["name"] = "Isle", ["boss"] = "B2", ["reset"] = "daily"},
         ["Raghârik's Chest"] = {
-            ["name"] = "Isle", ["boss"] = "B3", ["reset"] = "daily"}
-    
+            ["name"] = "Isle", ["boss"] = "B3", ["reset"] = "daily"},
+
+            -- Featured Instance --
+        ["Featured Instance"] = {
+            ["name"] = "Featured Instance", ["boss"] = "", ["reset"] = "daily"}
     }
 
 classDictionary = {
@@ -109,3 +112,85 @@ instanceLongnameDictionary = {
     ["DS"] = "Dun Shûma",
     ["MK"] = "Mâkhda Khorbo"
 }
+
+-- Chests
+-- MK B1 - Well-worn Corsair's Chest - Tier 2: You have 3 completions remaining.
+-- MK B2 - Belondor's Chest - Tier 2: You have 3 completions remaining.
+-- MK B3 - Forgotten Smuggler's Chest - Tier 2: You have 3 completions remaining.
+
+
+-- Tomb B1 - Sakhârshag's Chest - Tier 2: You have 9 completions remaining.
+-- Tomb B2 - Imanak-tûr's Chest - Tier 2: You have 9 completions remaining.
+-- Tomb B3 - Aratûg's Chest - Tier 2: You have 9 completions remaining.
+
+-- Dragon - Ragrekhûl's Spoils
+
+
+
+--[[ ERROR
+
+The lock for Khâshap's Chest - Solo has expired.
+The lock for Utho's Chest - Solo has expired.
+The lock for Aratûg's Chest - Solo has expired.
+The lock for Imanak-tûr's Chest - Solo has expired
+The lock for Sakhârshag's Chest - Solo has expired.
+The lock for Raghârik's Chest - Solo has expired.
+The lock for Urâbaz's Chest - Solo has expired.
+The lock for Arena Veteran's Chest - Solo has expired.
+The lock for Arena Neophyte's Chest - Solo has expired.
+The lock for Arena Champion's Chest - Solo has expired.
+
+]]
+
+-- Test Data
+--[[
+return 
+{
+	["locks"] = 
+	{
+		["Threatripper"] = 
+		{
+			["Tomb"] = 
+			{
+				["Tier 2"] = 
+				{
+					["B1"] = "9",
+					["B2"] = "9",
+					["B3"] = "9"
+				},
+				["completionEpoch"] = 1768258325.000000,
+				["reset"] = "daily"
+			},
+			["UB"] = 
+			{
+				["Tier 2"] = 
+				{
+					["B1"] = "3",
+					["B2"] = "3",
+					["B3"] = "3"
+				},
+				["completionEpoch"] = 1768258325.000000,
+				["reset"] = "weekly"
+			}
+		}
+	},
+	["settings"] = 
+	{
+		["button"] = 
+		{
+			["position_x"] = 1024.000000,
+			["position_y"] = 1300.000000
+		},
+		["window"] = 
+		{
+			["position_x"] = 90.000000,
+			["position_y"] = 660.000000
+		},
+		["showButton"] = true
+	},
+	["characterData"] = 
+	{
+		["Threatripper"] = "Champion"
+	}
+}
+]]
