@@ -151,6 +151,7 @@ function LocksmithInfoWindow:UpdateResetTimer()
 end
 
 function LocksmithInfoWindow:LoadLocksData()
+    checkForResets()
     locksInfo = LocksmithLocksData["locks"]
     -- characters --
     for character, instances in pairs(locksInfo) do

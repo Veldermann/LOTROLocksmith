@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>3.3.0</Version>
+        <Version>3.3.2</Version>
 <Description>
 - - Changelog - -
 
@@ -51,10 +51,19 @@ v3.2.1:
 
 v3.3.0:
 - Major reset timers rework
-- Correct reset timer regardless of timezone
+- Correct reset timer regardless of time zone
 - Experimental: Featured Instance
-- Epoch time for aqurate reset timers
-- More efficient reset calucaltions
+- Epoch time for accurate reset timers
+- More efficient reset calculations
+
+v3.3.1:
+- Added new instances 46.1
+- Ekal-Nêbi
+- Kôth Rau
+- Treasure Caves
+
+v3.3.2:
+- Instance name changes to commonly used ones on lff
 
 - - Changelog - -
 
@@ -64,9 +73,9 @@ Locksmith - Keeps locks in check
 # 12 man #
     UB, MK
 # 6 man #
-    Tomb, Wells, Dragon, Arena, DS
+    Ekal-Nêbi, Kôth Rau, Tomb, Wells, Dragon, Arena, DS
 # 3 man #
-    Fane, Streets, Island
+    Treasure Caves, Fane, Streets, Island
     
 /raid locks - data import
 

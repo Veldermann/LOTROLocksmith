@@ -25,6 +25,22 @@ chestsDictionary = {
             ["name"] = "UB", ["boss"] = "B6", ["reset"] = "weekly"},
     
     -- 6 man --
+            -- Ekal-Nêbi, The Fallen Palace
+        ["The Bloody Warden's Chest"] = {
+            ["name"] = "Ekal-Nêbi - Palace", ["boss"] = "B1", ["reset"] = "daily"},
+        ["The Dark Priestess' Chest"] = {
+            ["name"] = "Ekal-Nêbi - Palace", ["boss"] = "B2", ["reset"] = "daily"},
+        ["The Entangler's Chest"] = {
+            ["name"] = "Ekal-Nêbi - Palace", ["boss"] = "B3", ["reset"] = "daily"},    
+
+            -- Kôth Rau, THe Wailing Hold
+        ["The Twins' Chest"] = {
+            ["name"] = "Kôth Rau - Hold", ["boss"] = "B1", ["reset"] = "daily"},
+        ["Ombátha's Personal Chest"] = {
+            ["name"] = "Kôth Rau - Hold", ["boss"] = "B2", ["reset"] = "daily"},
+        ["Râkdakul's Tribute"] = {
+            ["name"] = "Kôth Rau - Hold", ["boss"] = "B3", ["reset"] = "daily"},
+
             -- Tomb --
         ["Sakhârshag's Chest"] = {
             ["name"] = "Tomb", ["boss"] = "B1", ["reset"] = "daily"},
@@ -66,6 +82,14 @@ chestsDictionary = {
             ["name"] = "DS", ["boss"] = "B3", ["reset"] = "daily"},
     
     -- 3 man --
+            -- The Treasure Caves of Hurum Kana --
+        ["Pakhán-gebar's Chest"] = {
+            ["name"] = "The Tresure Caves", ["boss"] = "B1", ["reset"] = "daily"},
+        ["The Council of Shadows' Chest"] = {
+            ["name"] = "The Tresure Caves", ["boss"] = "B2", ["reset"] = "daily"},
+        ["Bârlat the Bold's Chest"] = {
+            ["name"] = "The Tresure Caves", ["boss"] = "B3", ["reset"] = "daily"},
+        
             -- Fane --
         ["Eshêgur's Chest"] = {
             ["name"] = "Fane", ["boss"] = "B1", ["reset"] = "daily"},

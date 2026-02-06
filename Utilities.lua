@@ -1,4 +1,3 @@
-
 function tableLenght(table)
     if table ~= nil then
         counter = 0
