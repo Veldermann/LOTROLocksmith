@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>3.3.3</Version>
+        <Version>3.4.0</Version>
 <Description>
 - - Changelog - -
 
@@ -65,7 +65,7 @@ v3.3.1:
 v3.3.2:
 - Instance name changes to commonly used ones on lff
 
-v3.3.3:
+v3.4.0:
 - Caves B1 bug fix
 - Major code optimization
 
