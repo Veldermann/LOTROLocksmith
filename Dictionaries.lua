@@ -33,7 +33,7 @@ chestsDictionary = {
         ["The Entangler's Chest"] = {
             ["name"] = "Ekal-Nêbi - Palace", ["boss"] = "B3", ["reset"] = "daily"},    
 
-            -- Kôth Rau, THe Wailing Hold
+            -- Kôth Rau, The Wailing Hold
         ["The Twins' Chest"] = {
             ["name"] = "Kôth Rau - Hold", ["boss"] = "B1", ["reset"] = "daily"},
         ["Ombátha's Personal Chest"] = {
@@ -84,11 +84,11 @@ chestsDictionary = {
     -- 3 man --
             -- The Treasure Caves of Hurum Kana --
         ["Pakhán-gebar's Chest"] = {
-            ["name"] = "The Tresure Caves", ["boss"] = "B1", ["reset"] = "daily"},
+            ["name"] = "The Treasure Caves", ["boss"] = "B1", ["reset"] = "daily"},
         ["The Council of Shadows' Chest"] = {
-            ["name"] = "The Tresure Caves", ["boss"] = "B2", ["reset"] = "daily"},
+            ["name"] = "The Treasure Caves", ["boss"] = "B2", ["reset"] = "daily"},
         ["Bârlat the Bold's Chest"] = {
-            ["name"] = "The Tresure Caves", ["boss"] = "B3", ["reset"] = "daily"},
+            ["name"] = "The Treasure Caves", ["boss"] = "B3", ["reset"] = "daily"},
         
             -- Fane --
         ["Eshêgur's Chest"] = {
@@ -164,57 +164,4 @@ The lock for Arena Veteran's Chest - Solo has expired.
 The lock for Arena Neophyte's Chest - Solo has expired.
 The lock for Arena Champion's Chest - Solo has expired.
 
-]]
-
--- Test Data
---[[
-return 
-{
-	["locks"] = 
-	{
-		["Threatripper"] = 
-		{
-			["Tomb"] = 
-			{
-				["Tier 2"] = 
-				{
-					["B1"] = "9",
-					["B2"] = "9",
-					["B3"] = "9"
-				},
-				["completionEpoch"] = 1768258325.000000,
-				["reset"] = "daily"
-			},
-			["UB"] = 
-			{
-				["Tier 2"] = 
-				{
-					["B1"] = "3",
-					["B2"] = "3",
-					["B3"] = "3"
-				},
-				["completionEpoch"] = 1768258325.000000,
-				["reset"] = "weekly"
-			}
-		}
-	},
-	["settings"] = 
-	{
-		["button"] = 
-		{
-			["position_x"] = 1024.000000,
-			["position_y"] = 1300.000000
-		},
-		["window"] = 
-		{
-			["position_x"] = 90.000000,
-			["position_y"] = 660.000000
-		},
-		["showButton"] = true
-	},
-	["characterData"] = 
-	{
-		["Threatripper"] = "Champion"
-	}
-}
 ]]

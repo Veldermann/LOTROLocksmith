@@ -89,32 +89,31 @@ LocksmithIconButton = LocksmithIconButton()
 Turbine.Chat.Received = function(sender, args)
     message = args.Message
     if args.ChatType == 4 then
-        if message:find("The lock for ") and message:find(" has expired.") then
+        if message:find("The lock for ", 1, true) and message:find(" has expired.", 1, true) then
             checkForResets()
             return
         end
         if message:find(" - Tier ") or message:find("Solo") then
-            for boss, instance in pairs(chestsDictionary) do
-                strStart, strEnd = string.find(message:gsub("-", " "), boss)
-                if strStart ~= nil then
-                    _, fullLocked = message:find("resets in: ")
-                    if fullLocked then
-                        completionsRemaining = "LOCKED"
-                    else
-                        _, completionsNumberEnd = message:find("You have ")
-                        completionsRemaining = message:sub(completionsNumberEnd + 1, completionsNumberEnd + 1)
-                    end
-
-                    if message:find("Solo") then
-                        instanceTier = "Solo"
-                    else
-                        _, tierEnd = message:find("Tier ")
-                        instanceTier = "Tier " .. message:sub(tierEnd + 1, tierEnd + 1)
-                    end
-
-                    add_and_save(instance, instanceTier, completionsRemaining)
-                    break
+            bossEnd, _ = message:find(" - " , 1, true)
+            boss = message:sub(1, bossEnd - 1)
+            instance = chestsDictionary[boss]
+            if instance then
+                _, fullLocked = message:find("resets in: ", 1, true)
+                if fullLocked then
+                    completionsRemaining = "LOCKED"
+                else
+                    _, completionsNumberEnd = message:find("You have ", 1, true)
+                    completionsRemaining = message:sub(completionsNumberEnd + 1, completionsNumberEnd + 1)
                 end
+
+                if message:find("Solo") then
+                    instanceTier = "Solo"
+                else
+                    _, tierEnd = message:find("Tier ")
+                    instanceTier = "Tier " .. message:sub(tierEnd + 1, tierEnd + 1)
+                end
+                instance = chestsDictionary[boss]
+                add_and_save(instance, instanceTier, completionsRemaining)
             end
         end
 
@@ -170,6 +169,7 @@ Turbine.Chat.Received = function(sender, args)
 end
 
 function add_and_save(instance, instanceTier, completionsRemaining)
+    Turbine.Shell.WriteLine(instance)
     -- add Character
     if not LocksmithLocksData["locks"][PlayerName] then
         LocksmithLocksData["locks"][PlayerName] = {}
