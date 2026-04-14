@@ -85,6 +85,14 @@ import "Locksmith.Commands"
 import "Locksmith.LocksmithIconButton"
 LocksmithIconButton = LocksmithIconButton()
 
+--[[ Message Types ]]--
+--[[
+    4 - System
+    5 - Say
+    16 - LFF
+]]--
+
+
 -- Determine if chest opened or dungeon completed
 Turbine.Chat.Received = function(sender, args)
     message = args.Message
@@ -169,7 +177,6 @@ Turbine.Chat.Received = function(sender, args)
 end
 
 function add_and_save(instance, instanceTier, completionsRemaining)
-    Turbine.Shell.WriteLine(instance)
     -- add Character
     if not LocksmithLocksData["locks"][PlayerName] then
         LocksmithLocksData["locks"][PlayerName] = {}

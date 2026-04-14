@@ -23,7 +23,17 @@ chestsDictionary = {
             ["name"] = "UB", ["boss"] = "B5", ["reset"] = "weekly"},
         ["Azagath Sea shadow"] = {
             ["name"] = "UB", ["boss"] = "B6", ["reset"] = "weekly"},
-    
+
+        -- The Folly of Nagakhêdi --
+        ["Badharál's Grotesque Egg"] = {
+            ["name"] = "Folly", ["boss"] = "B1", ["reset"] = "weekly"},
+        ["Maukhorn's Chest"] = {
+            ["name"] = "Folly", ["boss"] = "B2", ["reset"] = "weekly"},
+        ["The Legion's Chest"] = {
+            ["name"] = "Folly", ["boss"] = "B3", ["reset"] = "weekly"},
+        ["Zamâktar the Putrescent"] = {
+            ["name"] = "Folly", ["boss"] = "B4", ["reset"] = "weekly"},
+
     -- 6 man --
             -- Ekal-Nêbi, The Fallen Palace
         ["The Bloody Warden's Chest"] = {

@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>3.4.0</Version>
+        <Version>4.0.0</Version>
 <Description>
 - - Changelog - -
 
@@ -68,6 +68,16 @@ v3.3.2:
 v3.4.0:
 - Caves B1 bug fix
 - Major code optimization
+
+v3.4.1:
+- Added upcoming U47 raid
+
+v3.4.2:
+- Fixed bug with Folly B4
+
+v4.0.0
+- Fixed title drag not registrering new window position
+- Added option to sort by instance
 
 - - Changelog - -
 

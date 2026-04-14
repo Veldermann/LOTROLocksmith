@@ -2,7 +2,7 @@
 LocksmithInfoWindow = class(Turbine.UI.Lotro.Window())
 function LocksmithInfoWindow:Constructor()
     local width = 250
-    local height = 450
+    local height = 480
     local x = LocksmithCharacterSettings["settings"]["window"]["position_x"]
     local y = LocksmithCharacterSettings["settings"]["window"]["position_y"]
     local font = Turbine.UI.Lotro.Font.BookAntiquaBold22
@@ -29,14 +29,34 @@ function LocksmithInfoWindow:Constructor()
     self.title:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
     self.title:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold22)
     self.title:SetText("Locksmith v " .. VersionNo)
+    self.title:SetZOrder(100)
+
+    self.sortByInstance = Turbine.UI.Lotro.CheckBox()
+    self.sortByInstance:SetParent(self)
+    self.sortByInstance:SetSize(width, 30)
+    self.sortByInstance:SetPosition(10, 420)
+    self.sortByInstance:SetBackColor(Turbine.UI.Color(0.250, 0.250, 0.250))
+    self.sortByInstance:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+    self.sortByInstance:SetText("  Sort by instances.")
+    if LocksmithCharacterSettings["settings"]["sortByInstance"] ~= nil then
+        self.sortByInstance:SetChecked(LocksmithCharacterSettings["settings"]["sortByInstance"])
+    end
 
     self.resetLable = Turbine.UI.Label()
     self.resetLable:SetParent(self)
     self.resetLable:SetSize(width, 30)
-    self.resetLable:SetPosition(0, 420)
+    self.resetLable:SetPosition(0, 450)
     self.resetLable:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
     self.resetLable:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
     self.resetLable:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+
+    -- Set instace filter checkbox status --
+    self.sortByInstance.CheckedChanged = function(sender, args)
+        self:HideWindow()
+        LocksmithCharacterSettings["settings"]["sortByInstance"] = self.sortByInstance:IsChecked()
+        Turbine.PluginData.Save(Turbine.DataScope.Character, "LocksmithCharacterSettings", LocksmithCharacterSettings)
+        self:ShowWindow()
+    end
 
     -- Window moving --
     self.Moving = false
@@ -97,23 +117,23 @@ function LocksmithInfoWindow:Constructor()
         end
     end
 
-     -- Create the tree view control.
-     self.treeView = Turbine.UI.TreeView();
-     self.treeView:SetParent(self);
-     self.treeView:SetPosition(8, 37);
-     self.treeView:SetSize(234, 375);
-     self.treeView:SetBackColor(Turbine.UI.Color(0.250, 0.250, 0.250));
-     self.treeView:SetIndentationWidth(15);
-      
-     -- Give the tree view a scroll bar.
-     scriptTextScrollBar = Turbine.UI.Lotro.ScrollBar();
-     scriptTextScrollBar:SetOrientation(Turbine.UI.Orientation.Vertical);
-     scriptTextScrollBar:SetParent(self);
-     scriptTextScrollBar:SetPosition(240, 70);
-     scriptTextScrollBar:SetSize(10, 340);
-     scriptTextScrollBar:SetVisible(false)
-      
-     self.treeView:SetVerticalScrollBar(scriptTextScrollBar);
+    -- Create the tree view control.
+    self.treeView = Turbine.UI.TreeView();
+    self.treeView:SetParent(self);
+    self.treeView:SetPosition(8, 37);
+    self.treeView:SetSize(234, 375);
+    self.treeView:SetBackColor(Turbine.UI.Color(0.250, 0.250, 0.250));
+    self.treeView:SetIndentationWidth(15);
+    
+    -- Give the tree view a scroll bar.
+    scriptTextScrollBar = Turbine.UI.Lotro.ScrollBar();
+    scriptTextScrollBar:SetOrientation(Turbine.UI.Orientation.Vertical);
+    scriptTextScrollBar:SetParent(self);
+    scriptTextScrollBar:SetPosition(240, 70);
+    scriptTextScrollBar:SetSize(10, 340);
+    scriptTextScrollBar:SetVisible(false)
+    
+    self.treeView:SetVerticalScrollBar(scriptTextScrollBar);
     
     self.rootNodes = self.treeView:GetNodes()
 end
@@ -125,7 +145,14 @@ end
 function LocksmithInfoWindow:ShowWindow()
     LocksmithInfoWindow.rootNodes:Add(LocksmithInfoWindow.treeView:GetNodes())
     LocksmithInfoWindow:UpdateResetTimer()
-    LocksmithInfoWindow:LoadLocksData()
+    checkForResets()
+    -- Show by character or instances
+    if LocksmithCharacterSettings["settings"]["sortByInstance"] ~= nil and LocksmithCharacterSettings["settings"]["sortByInstance"] then
+        LocksmithInfoWindow:ShowByInsances()
+    else
+        LocksmithInfoWindow:ShowByCharacters()
+    end
+
     LocksmithInfoWindow:SetVisible(true)
 end
 
@@ -150,8 +177,7 @@ function LocksmithInfoWindow:UpdateResetTimer()
     self.resetLable:SetText("Weekly reset in " .. daysToReset .. "d ".. hoursToReset .. "h " .. minutesToReset .. "m")
 end
 
-function LocksmithInfoWindow:LoadLocksData()
-    checkForResets()
+function LocksmithInfoWindow:ShowByCharacters()
     locksInfo = LocksmithLocksData["locks"]
     -- characters --
     for character, instances in pairs(locksInfo) do
@@ -328,6 +354,204 @@ function LocksmithInfoWindow:LoadLocksData()
                             subNodes:Add(bossAttemptsNode);
                 
                             local subNodes = bossAttemptsNode:GetChildNodes();
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+
+function LocksmithInfoWindow:ShowByInsances()
+    locksInfo = sortByInstances()
+    -- Instances --
+    local instancesKeys = {}
+    for instanceKey in pairs(locksInfo) do
+        table.insert(instancesKeys, instanceKey)
+    end
+    table.sort(instancesKeys)
+
+    for _, instance in pairs(instancesKeys) do
+        local tiers = locksInfo[instance]
+        if tableLenght(tiers) > 0 then
+            scriptTextScrollBar:SetVisible(false)
+            local instanceNode = Turbine.UI.TreeNode()
+            instanceNode:SetSize(240, 30)
+
+            instanceNode.border = Turbine.UI.Control()
+            instanceNode.border:SetParent(instanceNode)
+            instanceNode.border:SetSize(240, 30)
+            instanceNode.border:SetPosition(0, 3)
+            instanceNode.border:SetMouseVisible(false)
+            instanceNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+
+            instanceNode.background = Turbine.UI.Control()
+            instanceNode.background:SetParent(instanceNode)
+            instanceNode.background:SetSize(228, 21)
+            instanceNode.background:SetPosition(3, 6)
+            instanceNode.background:SetMouseVisible(false)
+            instanceNode.background:SetBackColor(Turbine.UI.Color(0.175, 0.175, 0.175))
+
+            instanceNode.label = Turbine.UI.Label()
+            instanceNode.label:SetParent(instanceNode)
+            instanceNode.label:SetSize(228, 24)
+            instanceNode.label:SetPosition(7, 3)
+            instanceNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
+            instanceNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+            instanceNode.label:SetText(instance)
+
+            -- Mouse functions --
+            instanceNode.label.MouseEnter = function()
+                instanceNode.background:SetBackColor(Turbine.UI.Color(0, 0, 0))
+            end
+            instanceNode.label.MouseLeave = function()
+                instanceNode.background:SetBackColor(Turbine.UI.Color(0.175, 0.175, 0.175))
+            end
+
+            self.rootNodes:Add(instanceNode);
+        
+            local subNodes = instanceNode:GetChildNodes();
+                
+            -- Tiers --
+            local tiersKeys = {}
+            for tierKey in pairs(tiers) do
+                table.insert(tiersKeys, tierKey)
+            end
+            table.sort(tiersKeys)
+
+            for _, tier in pairs(tiersKeys) do
+                local bosses = tiers[tier]
+                local tierNode = Turbine.UI.TreeNode();
+                tierNode:SetSize(152, 27)
+
+                -- Border --
+                tierNode.border = Turbine.UI.Control()
+                tierNode.border:SetParent(tierNode)
+                tierNode.border:SetSize(152, 27)
+                tierNode.border:SetPosition(3, 3)
+                tierNode.border:SetMouseVisible(false)
+                tierNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+
+                tierNode.background = Turbine.UI.Control()
+                tierNode.background:SetParent(tierNode)
+                tierNode.background:SetSize(143, 18)
+                tierNode.background:SetPosition(6, 6)
+                tierNode.background:SetMouseVisible(false)
+                tierNode.background:SetBackColor(Turbine.UI.Color(0.225, 0.225, 0.225))
+
+                tierNode.label = Turbine.UI.Label()
+                tierNode.label:SetParent(tierNode)
+                tierNode.label:SetSize(143, 18)
+                tierNode.label:SetPosition(10, 5)
+                tierNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleLeft)
+                tierNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+                tierNode.label:SetText(tier)
+                
+                -- Mouse functions --
+                tierNode.label.MouseEnter = function()
+                    tierNode.background:SetBackColor(Turbine.UI.Color(0, 0, 0))
+                end
+                tierNode.label.MouseLeave = function()
+                    tierNode.background:SetBackColor(Turbine.UI.Color(0.225, 0.225, 0.225))
+                end
+
+                subNodes:Add(tierNode);
+        
+                local subNodes = tierNode:GetChildNodes();
+        
+                -- Bosses--
+                local bossesKeys = {}
+                for bossKey in pairs(bosses) do
+                    table.insert(bossesKeys, bossKey)
+                end
+                table.sort(bossesKeys)
+
+                for _, boss in pairs(bossesKeys) do
+                    local characters = bosses[boss]
+                    if boss ~= "completionEpoch" and boss ~= "reset" then
+                        local bossNode = Turbine.UI.TreeNode();
+                        bossNode:SetSize(144, 26)
+
+                        -- Border --
+                        bossNode.border = Turbine.UI.Control()
+                        bossNode.border:SetParent(bossNode)
+                        bossNode.border:SetSize(144, 26)
+                        bossNode.border:SetPosition(3, 3)
+                        bossNode.border:SetMouseVisible(false)
+                        bossNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+
+                        bossNode.background = Turbine.UI.Control()
+                        bossNode.background:SetParent(bossNode)
+                        bossNode.background:SetSize(135, 17)
+                        bossNode.background:SetPosition(6, 6)
+                        bossNode.background:SetMouseVisible(false)
+                        bossNode.background:SetBackColor(Turbine.UI.Color(0.275, 0.275, 0.275))
+
+                        bossNode.label = Turbine.UI.Label()
+                        bossNode.label:SetParent(bossNode)
+                        bossNode.label:SetSize(135, 17)
+                        bossNode.label:SetPosition(5, 5)
+                        bossNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
+                        bossNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+                        bossNode.label:SetText(boss)
+
+                        -- Mouse functions --
+                        bossNode.label.MouseEnter = function()
+                            bossNode.background:SetBackColor(Turbine.UI.Color(0, 0, 0))
+                        end
+                        bossNode.label.MouseLeave = function()
+                            bossNode.background:SetBackColor(Turbine.UI.Color(0.275, 0.275, 0.275))
+                        end
+
+                        subNodes:Add(bossNode);
+            
+                        local subNodes = bossNode:GetChildNodes();
+
+                        -- Characters --
+                        local charactersKeys = {}
+                        for characterKey in pairs(characters) do
+                            table.insert(charactersKeys, characterKey)
+                        end
+                        table.sort(charactersKeys)
+
+                        for _, character in pairs(charactersKeys) do
+                            local lengthOuter = 185
+                            local lengthInner = lengthOuter - 9
+
+                            local attempts = characters[character]
+                            local characterAttemptsNode = Turbine.UI.TreeNode();
+                            characterAttemptsNode:SetSize(lengthOuter, 26)
+
+                            characterAttemptsNode.border = Turbine.UI.Control()
+                            characterAttemptsNode.border:SetParent(characterAttemptsNode)
+                            characterAttemptsNode.border:SetSize(lengthOuter, 26)
+                            characterAttemptsNode.border:SetPosition(3, 3)
+                            characterAttemptsNode.border:SetMouseVisible(false)
+                            characterAttemptsNode.border:SetBackColor(Turbine.UI.Color(0.125, 0.125, 0.125))
+
+                            characterAttemptsNode.background = Turbine.UI.Control()
+                            characterAttemptsNode.background:SetParent(characterAttemptsNode)
+                            characterAttemptsNode.background:SetSize(lengthInner, 17)
+                            characterAttemptsNode.background:SetPosition(6, 6)
+                            characterAttemptsNode.background:SetMouseVisible(false)
+                            characterAttemptsNode.background:SetBackColor(Turbine.UI.Color(0.325, 0.325, 0.325))
+
+                            characterAttemptsNode.label = Turbine.UI.Label()
+                            characterAttemptsNode.label:SetParent(characterAttemptsNode)
+                            characterAttemptsNode.label:SetSize(lengthInner, 17)
+                            characterAttemptsNode.label:SetPosition(5, 5)
+                            characterAttemptsNode.label:SetTextAlignment(Turbine.UI.ContentAlignment.MiddleCenter)
+                            characterAttemptsNode.label:SetFont(Turbine.UI.Lotro.Font.BookAntiquaBold18)
+                            if character == "" then
+                                characterAttemptsNode.label:SetText(attempts)
+                            else
+                                characterAttemptsNode.label:SetText(character .. " - " .. attempts)
+                            end
+
+                            subNodes:Add(characterAttemptsNode);
+                
+                            local subNodes = characterAttemptsNode:GetChildNodes();
                         end
                     end
                 end
