@@ -65,18 +65,7 @@ function LocksmithIconButton:Constructor()
             local newTop = self:GetTop() - (self.MoveY - args.Y)
             self:SetPosition(newLeft,newTop)
         end
-    end
-
-
-    -- TODO: Wierd code that can't be removed
-    self.random = Turbine.UI.Label()
-    self.random:SetParent(self)
-    self.random:SetSize(0, 0)
-    self.random.MouseMove = function()
-        if self.Moving then 
-        end
-    end
-    
+    end    
 end
 
 function LocksmithIconButton:MouseEnter()

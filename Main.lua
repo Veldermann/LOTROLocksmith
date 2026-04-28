@@ -72,7 +72,7 @@ if not LocksmithLocksData["characterData"] then
 end
 
 if not LocksmithLocksData["characterData"][PlayerName] then
-    LocksmithLocksData["characterData"][PlayerName] = classDictionary[PlayerClass]
+    LocksmithLocksData["characterData"][PlayerName] = classDictionary[PlayerClass]["name"]
 end
 
 Turbine.PluginData.Save(Turbine.DataScope.Server, "LocksmithLocksData", LocksmithLocksData)
@@ -96,7 +96,7 @@ LocksmithIconButton = LocksmithIconButton()
 -- Determine if chest opened or dungeon completed
 Turbine.Chat.Received = function(sender, args)
     message = args.Message
-    if args.ChatType == 4 then
+    if args.ChatType == 4 and not message:find("<Prime>") then
         if message:find("The lock for ", 1, true) and message:find(" has expired.", 1, true) then
             checkForResets()
             return
@@ -128,7 +128,7 @@ Turbine.Chat.Received = function(sender, args)
     -- Special Instances
     -- args.ChatType == 21, message:find(" -- Solo")
     -- Completed: Featured Instance: Great Barrow - Thadúr (cap level)
-    elseif args.ChatType == 21 and message:find("Completed:")then
+    elseif args.ChatType == 21 and message:find("Completed:") then
         -- Featured Instance
         if message:find("Featured Instance:") and message:find("cap level") then
             if not LocksmithLocksData["Featured Instance"] then

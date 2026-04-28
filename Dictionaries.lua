@@ -128,17 +128,50 @@ chestsDictionary = {
     }
 
 classDictionary = {
-    [23] = "Guardian",
-    [214] = "Beorning",
-    [40] = "Burglar",
-    [24] = "Captain",
-    [172] = "Champion",
-    [162] = "Hunter",
-    [185] = "Lore-Master",
-    [31] = "Minstrel",
-    [193] = "Rune-Keeper",
-    [194] = "Warden",
-    [215] = "Brawler"
+    [23] = {
+        ["name"] = "Guardian",
+        ["short"] = "GRD"
+    },
+    [214] = {
+        ["name"] = "Beorning",
+        ["short"] = "BEO"
+    },
+    [40] = {
+        ["name"] = "Burglar",
+        ["short"] = "BRG"
+    },
+    [24] = {
+        ["name"] = "Captain",
+        ["short"] = "CPT"
+    },
+    [172] = {
+        ["name"] = "Champion",
+        ["short"] = "CMP"
+    },
+    [162] = {
+        ["name"] = "Hunter",
+        ["short"] = "HNT"
+    },
+    [185] = {
+        ["name"] = "Lore-Master",
+        ["short"] = "LM"
+    },
+    [31] = {
+        ["name"] = "Minstrel",
+        ["short"] = "MST"
+    },
+    [193] = {
+        ["name"] = "Rune-Keeper",
+        ["short"] = "RK"
+    },
+    [194] = {
+        ["name"] = "Warden",
+        ["short"] = "WRD"
+    },
+    [215] = {
+        ["name"] = "Brawler",
+        ["short"] = "BLR"
+    }
 }
 
 instanceLongnameDictionary = {
