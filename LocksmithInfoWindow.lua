@@ -138,10 +138,6 @@ function LocksmithInfoWindow:Constructor()
     self.rootNodes = self.treeView:GetNodes()
 end
 
-function LocksmithInfoWindow:KeyDown(sender, args)
-    Turbine.Shell.WriteLine("asd")
-end
-
 function LocksmithInfoWindow:ShowWindow()
     LocksmithInfoWindow.rootNodes:Add(LocksmithInfoWindow.treeView:GetNodes())
     LocksmithInfoWindow:UpdateResetTimer()

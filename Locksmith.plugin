@@ -3,7 +3,7 @@
     <Information>
     <Name>Locksmith</Name>
         <Author>Threatripper</Author>
-        <Version>4.0.1</Version>
+        <Version>4.1.0</Version>
 <Description>
 - - Changelog - -
 
@@ -83,6 +83,8 @@ v4.0.1
 - Some code cleanuo
 - Filtered out some text, to not show error messages
 
+v4.1.0
+- Added Pagru-kirít, The Garden of Corpses
 - - Changelog - -
 
 Locksmith - Keeps locks in check

@@ -35,6 +35,17 @@ chestsDictionary = {
             ["name"] = "Folly", ["boss"] = "B4", ["reset"] = "weekly"},
 
     -- 6 man --
+            -- Pagru-kirít, The Garden of Corpses --
+        ["Kishâsu's Chest"] = {
+            ["name"] = "Pagru-kirít - The Garden", ["boss"] = "B1", ["reset"] = "daily"
+        },
+        ["Khardâmu's Chest"] = {
+            ["name"] = "Pagru-kirít - The Garden", ["boss"] = "B2", ["reset"] = "daily" 
+        },
+        ["Sudûgul's Chest"] = {
+            ["name"] = "Pagru-kirít - The Garden", ["boss"] = "B3", ["reset"] = "daily"
+        },
+
             -- Ekal-Nêbi, The Fallen Palace
         ["The Bloody Warden's Chest"] = {
             ["name"] = "Ekal-Nêbi - Palace", ["boss"] = "B1", ["reset"] = "daily"},
